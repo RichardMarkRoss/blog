@@ -1,0 +1,64 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: ./7-blog-backend
+      dockerfile: Dockerfile
+    container_name: blog_backend
+    env_file:
+      - ./7-blog-backend/.env
+    volumes:
+      - ./7-blog-backend:/var/www
+    ports:
+      - "9000:9000"
+    networks:
+      - blog_network
+    depends_on:
+      - db
+
+  frontend:
+    build:
+      context: ./7-blog
+      dockerfile: Dockerfile
+    container_name: blog_frontend
+    volumes:
+      - ./7-blog:/usr/src/app
+    ports:
+      - "3000:3000"
+    networks:
+      - blog_network
+    depends_on:
+      - backend
+
+  db:
+    image: mysql:8.0
+    container_name: blog_db
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: blog
+      MYSQL_USER: user
+      MYSQL_PASSWORD: password
+    volumes:
+      - db_data:/var/lib/mysql
+    ports:
+      - "3306:3306"
+    networks:
+      - blog_network
+
+  mailpit:
+    image: axllent/mailpit
+    container_name: mailpit
+    ports:
+      - "1025:1025"
+      - "8025:8025"
+    networks:
+      - blog_network
+
+networks:
+  blog_network:
+    driver: bridge
+
+volumes:
+  db_data:
