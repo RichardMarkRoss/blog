@@ -18,8 +18,8 @@ Follow these instructions to get the project up and running on your local machin
 Clone the project repository to your local machine.
 
 ```bash
-git clone <repository-url>
-cd <repository-directory>
+git clone https://github.com/RichardMarkRoss/blog
+cd blog
 ```
 
  ### 2. Environment Setup
